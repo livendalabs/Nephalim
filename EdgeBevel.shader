@@ -17,23 +17,15 @@ Shader "Hidden/EdgeBevelEffect"
     sampler2D _CameraDepthTexture;
     float4 _MainTex_TexelSize; // xy = 1/width, 1/height; zw = width, height
 
-    struct appdata_img
-    {
-        float4 vertex : POSITION;
-        float2 uv : TEXCOORD0;
-    };
+    // appdata_img and v2f_img are defined in UnityCG.cginc
+    // We will use appdata_base for vertex shader input for simplicity,
+    // as it contains vertex and texcoord.
 
-    struct v2f_img
-    {
-        float4 pos : SV_POSITION;
-        float2 uv : TEXCOORD0;
-    };
-
-    v2f_img vert(appdata_img v)
+    v2f_img vert(appdata_base v) // Changed input type to appdata_base
     {
         v2f_img o;
         o.pos = UnityObjectToClipPos(v.vertex);
-        o.uv = v.uv; // Using non-adjusted UVs here, will adjust in frag
+        o.uv = v.texcoord; // appdata_base uses 'texcoord' instead of 'uv'
         return o;
     }
 
